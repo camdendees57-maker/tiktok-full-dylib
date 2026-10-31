@@ -18,6 +18,7 @@ jobs:
             -dynamiclib \
             -install_name @executable_path/Frameworks/TikTokFull.dylib \
             -framework Foundation \
+            -framework UIKit \
             -fobjc-arc \
             -o TikTokFull.dylib \
             Tweak.m
