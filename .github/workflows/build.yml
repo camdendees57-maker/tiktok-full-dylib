@@ -1,0 +1,32 @@
+name: Build Pure Clang Dylib
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build with clang
+        run: |
+          xcrun -sdk iphoneos clang -arch arm64 \
+            -miphoneos-version-min=15.0 \
+            -dynamiclib \
+            -install_name @executable_path/Frameworks/TikTokFull.dylib \
+            -framework Foundation \
+            -fobjc-arc \
+            -o TikTokFull.dylib \
+            Tweak.m
+          codesign --remove-signature TikTokFull.dylib || true
+          ls -la TikTokFull.dylib
+          otool -L TikTokFull.dylib || true
+
+      - name: Upload dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: TikTokFull
+          path: TikTokFull.dylib
